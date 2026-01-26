@@ -1,0 +1,6 @@
+DIFFÉRENCE ENTRE UN MCP-SERVER ET UNE API REST
+Le serveur MCP permet de découvrir dynamiquement des outils par l'hote (et que l'AI va être capable d'utiliser). Dans le cas de l'API,
+ il faut connaitre et configurer les routes à appeler en se basant sur une documentation.
+ Concrèetement si on ajoute de nouveaux outils depuis le HOST du serveur, ceci sera automatiquement decouvert du côté de
+  l'hote sans avoir à y rajouter une documentation.
+--> Transport Type: STDIO
