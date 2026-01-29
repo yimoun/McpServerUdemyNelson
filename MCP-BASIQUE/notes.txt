@@ -3,8 +3,12 @@ Le serveur MCP permet de découvrir dynamiquement des outils par l'hote (et que 
  il faut connaitre et configurer les routes à appeler en se basant sur une documentation.
  Concrèetement si on ajoute de nouveaux outils depuis le HOST du serveur, ceci sera automatiquement decouvert du côté de
   l'hote sans avoir à y rajouter une documentation.
+<<<<<<< HEAD
 --> Transport Type: STDIO
 
 On peut avoir un server MCP depuis une image-docker, depuis un remote HTTP, ou meme en local (via la commande stdio) etc.
 
 Un server-mcp est une sorte d'intermédiaire entre mon IA et des sources de données 
+=======
+--> Transport Type: STDIO
+>>>>>>> b28241adb607133856f4074d6c792eb08c4e2768
