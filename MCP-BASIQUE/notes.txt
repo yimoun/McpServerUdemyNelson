@@ -40,3 +40,33 @@ dans LM Studio...Cette fois-ci via LM Studio, on utilise des model en local, mai
 de AICodeMentor, on peut utiliser des models en ligne comme celui de Grock ou OpenAI.
 
  Permettre à une IA d'allumer la lumière grâce à un serveur MCP dédié: Les lumièeres de marque: Philips Hue (IOT)
+
+
+Création d'un client MCP en ligne de commandes
+-->On va appéler deux fois consécutivemnent LM Studio: la 1ere fois (si besoin) pour déclencher un outil , la 2e fois pour 
+Read [](file:///Users/nelsonjunioryimounoubissi/Downloads/McpServerUdemyNelson-main/mcp-client/client.ts#1-1), lines 1 to 80
+
+**Logique globale MCP Client :**
+
+```
+Utilisateur → Client MCP → LLM (LM Studio) → Tools MCP Server → Réponse
+```
+
+1. **Client** se connecte au serveur MCP et récupère les tools disponibles
+2. **Utilisateur** pose une question
+3. **Client** envoie la question + liste des tools au **LLM**
+4. **LLM** décide s'il a besoin d'un tool (ex: récupérer la météo)
+5. Si oui → **Client** appelle le tool via **MCP Server**
+6. **Résultat** du tool retourne au **LLM** qui génère la réponse finale
+
+---
+
+**LM Studio vs LLM en ligne :**
+
+| **LM Studio** | **Grok/OpenAI** |
+|---------------|-----------------|
+| ✅ **Local** (ton Mac) | ☁️ **Cloud** (Internet) |
+| ✅ **Gratuit** | 💰 **Payant** |
+| ✅ **Privé** (tes données restent chez toi) | ⚠️ **Données envoyées** en ligne |
+| ❌ Moins puissant | ✅ Plus puissant |
+| ❌ Besoin RAM/CPU | ✅ Pas de ressources locales |

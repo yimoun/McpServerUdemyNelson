@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 dotenv.config();
-const LM_API_URL = "http://127.0.0.1:1234/v1/chat/completions";
-const LM_MODEL = "qwen/qwen3-14b"; // Remplacer par votre modèle
+const LM_API_URL = "http://127.0.0.1:1234/v1/chat/completions"; // API de LM Studio avec la bonne route
+const LM_MODEL = "qwen/qwen3-1.7b";
 class MCPClient {
     mcp;
     transport = null;
@@ -21,8 +21,8 @@ class MCPClient {
             ? process.platform === "win32" ? "python" : "python3"
             : process.execPath;
         this.transport = new StdioClientTransport({ command, args: [serverScriptPath] });
-        await this.mcp.connect(this.transport);
-        const toolsResult = await this.mcp.listTools();
+        await this.mcp.connect(this.transport); // Connexion au serveur MCP
+        const toolsResult = await this.mcp.listTools(); // Récupération des outils disponibles
         this.tools = toolsResult.tools.map(tool => ({
             type: "function",
             function: {
@@ -33,12 +33,13 @@ class MCPClient {
         }));
         console.log("Connected to server with tools:", this.tools.map(t => t.function.name));
     }
+    // Traite une requête utilisateur, gère les appels d'outils si nécessaire
     async processQuery(query) {
-        const messages = [{ role: "user", content: query }];
+        const messages = [{ role: "user", content: query + " /no_think" }];
         const payload = {
             model: LM_MODEL,
             messages,
-            tools: this.tools,
+            tools: this.tools, // Fournir les outils au modèle utilisé dans LM Studio
             max_tokens: 1000,
             stream: false,
         };
@@ -63,6 +64,7 @@ class MCPClient {
                 }
                 catch { }
                 const toolCallId = toolCall.id;
+                // Appel de l'outil via MCP
                 const result = await this.mcp.callTool({ name: toolName, arguments: toolArgs });
                 messages.push({
                     role: "tool",
@@ -96,7 +98,7 @@ class MCPClient {
             console.log("\nMCP Client Started!");
             console.log("Type your queries or 'quit' to exit.");
             while (true) {
-                const message = await rl.question("\nQuery: ");
+                const message = await rl.question("\nQuery: "); // Attendre la saisie utilisateur
                 if (message.toLowerCase() === "quit")
                     break;
                 const response = await this.processQuery(message);
