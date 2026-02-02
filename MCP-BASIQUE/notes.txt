@@ -15,3 +15,18 @@ ou tel fonctionnalité.
 
 Permettre à l'IA d'écrire sur Discord via un Serveur MCP connecté à un webhook:
 -->En entreprise ca peut etre tres utile avec le webhook de Teams pour remonter des alertes.
+
+Création d'un Serveur MCP capable de récupérer de la documentation en ligne:
+-->Creer un serveur MCP qui permet d'avoir acces en temps reel à la documentation et de la documentation à jour.
+ou meme de la documentation privée qui serait interne à votre entreprise.à
+  📚 Différence entre Tools et Resources
+  Resources (Ressources)
+  Données statiques ou semi-statiques que l'IA peut consulter
+  Pas de paramètres (ou paramètres très simples comme un URI)
+  Exemples : documentation, conventions de code, configuration
+  L'IA les lit passivement
+  Tools (Outils)
+  Actions exécutables avec des paramètres
+  Logique dynamique : recherche, calcul, transformation
+  Exemples : rechercher dans une API, filtrer des données, calculer
+  L'IA les exécute activement
