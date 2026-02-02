@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Articles par Catégorie</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-card .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .categories-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 12px 24px;
+            border: none;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-btn.active {
+            background: #764ba2;
+            color: white;
+        }
+
+        .category-section {
+            margin-bottom: 50px;
+        }
+
+        .category-title {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border-left: 5px solid white;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .article-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+            flex: 1;
+        }
+
+        .article-category {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .category-technologie {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .category-voyages {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .category-cuisine {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .article-content {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .article-footer {
+            display: flex;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .article-id {
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .no-articles {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Mon Blog</h1>
+            <p>Découvrez nos articles par catégorie</p>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number" id="totalCategories">0</div>
+                    <div class="label">Catégories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="totalArticles">0</div>
+                    <div class="label">Articles</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="categories-nav" id="categoriesNav"></div>
+
+        <div id="content"></div>
+    </div>
+
+    <script>
+        // Données du blog
+        const blogData = {
+            categories: [
+                { id: 1, nom: "Technologie" },
+                { id: 2, nom: "Voyages" },
+                { id: 3, nom: "Cuisine" }
+            ],
+            articles: {
+                "Technologie": [
+                    {
+                        id: 1,
+                        titre: "Mon premier programme JavaScript",
+                        contenu: "Le contenu de mon article sur JavaScript et Node.js...",
+                        nom_utilisateur: "Alice",
+                        utilisateur_id: 1,
+                        nom_categorie: "Technologie",
+                        categorie_id: 1
+                    }
+                ],
+                "Voyages": [
+                    {
+                        id: 2,
+                        titre: "Découverte de l'Asie du Sud-Est",
+                        contenu: "Un voyage mémorable à travers les cultures asiatiques...",
+                        nom_utilisateur: "Bob",
+                        utilisateur_id: 2,
+                        nom_categorie: "Voyages",
+                        categorie_id: 2
+                    }
+                ],
+                "Cuisine": [
+                    {
+                        id: 3,
+                        titre: "Recette de sushis maison",
+                        contenu: "Comment préparer de délicieux sushis comme un pro...",
+                        nom_utilisateur: "Alice",
+                        utilisateur_id: 1,
+                        nom_categorie: "Cuisine",
+                        categorie_id: 3
+                    }
+                ]
+            }
+        };
+
+        let selectedCategory = null;
+
+        function init() {
+            updateStats();
+            renderCategoriesNav();
+            renderAllCategories();
+        }
+
+        function updateStats() {
+            const totalArticles = Object.values(blogData.articles).reduce((sum, articles) => sum + articles.length, 0);
+            document.getElementById('totalCategories').textContent = blogData.categories.length;
+            document.getElementById('totalArticles').textContent = totalArticles;
+        }
+
+        function renderCategoriesNav() {
+            const nav = document.getElementById('categoriesNav');
+            
+            const allBtn = document.createElement('button');
+            allBtn.className = 'category-btn active';
+            allBtn.textContent = 'Toutes les catégories';
+            allBtn.onclick = () => filterCategory(null);
+            nav.appendChild(allBtn);
+
+            blogData.categories.forEach(category => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.textContent = category.nom;
+                btn.onclick = () => filterCategory(category.nom);
+                nav.appendChild(btn);
+            });
+        }
+
+        function filterCategory(categoryName) {
+            selectedCategory = categoryName;
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((categoryName === null && btn.textContent === 'Toutes les catégories') ||
+                    btn.textContent === categoryName) {
+                    btn.classList.add('active');
+                }
+            });
+
+            if (categoryName === null) {
+                renderAllCategories();
+            } else {
+                renderSingleCategory(categoryName);
+            }
+        }
+
+        function renderAllCategories() {
+            const content = document.getElementById('content');
+            content.innerHTML = '';
+
+            blogData.categories.forEach(category => {
+                const articles = blogData.articles[category.nom] || [];
+                if (articles.length > 0) {
+                    const section = createCategorySection(category.nom, articles);
+                    content.appendChild(section);
+                }
+            });
+        }
+
+        function renderSingleCategory(categoryName) {
+            const content = document.getElementById('content');
+            content.innerHTML = '';
+            
+            const articles = blogData.articles[categoryName] || [];
+            const section = createCategorySection(categoryName, articles);
+            content.appendChild(section);
+        }
+
+        function createCategorySection(categoryName, articles) {
+            const section = document.createElement('div');
+            section.className = 'category-section';
+
+            const title = document.createElement('h2');
+            title.className = 'category-title';
+            title.textContent = categoryName;
+            section.appendChild(title);
+
+            if (articles.length === 0) {
+                const noArticles = document.createElement('div');
+                noArticles.className = 'no-articles';
+                noArticles.textContent = 'Aucun article dans cette catégorie';
+                section.appendChild(noArticles);
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'articles-grid';
+                
+                articles.forEach(article => {
+                    const card = createArticleCard(article);
+                    grid.appendChild(card);
+                });
+                
+                section.appendChild(grid);
+            }
+
+            return section;
+        }
+
+        function createArticleCard(article) {
+            const card = document.createElement('div');
+            card.className = 'article-card';
+
+            const categoryClass = `category-${article.nom_categorie.toLowerCase()}`;
+            
+            card.innerHTML = `
+                <div class="article-header">
+                    <h3 class="article-title">${article.titre}</h3>
+                    <span class="article-category ${categoryClass}">${article.nom_categorie}</span>
+                </div>
+                <p class="article-content">${article.contenu}</p>
+                <div class="article-footer">
+                    <div class="author-avatar">${article.nom_utilisateur.charAt(0)}</div>
+                    <div class="author-info">
+                        <div class="author-name">${article.nom_utilisateur}</div>
+                        <div class="article-id">Article #${article.id}</div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Initialize the page
+        init();
+    </script>
+</body>
+</html>

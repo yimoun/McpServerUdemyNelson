@@ -1,17 +1,17 @@
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const cors = require('cors'); // Pour permettre les requêtes depuis le front-end
+const express = require("express");
+const sqlite3 = require("sqlite3").verbose();
+const cors = require("cors"); // Pour permettre les requêtes depuis le front-end
 
 const app = express();
 const port = 3000; // Le port sur lequel ton API va écouter
 
 // --- Configuration de la base de données SQLite ---
-const DB_FILE = 'mon_exemple.db'; // Assure-toi que ce fichier existe et contient tes tables
+const DB_FILE = "mon_exemple.db"; // Assure-toi que ce fichier existe et contient tes tables
 const db = new sqlite3.Database(DB_FILE, sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-        console.error(err.message);
-    }
-    console.log('Connecté à la base de données SQLite.');
+  if (err) {
+    console.error(err.message);
+  }
+  console.log("Connecté à la base de données SQLite.");
 });
 
 // --- Middlewares ---
@@ -21,60 +21,121 @@ app.use(express.json()); // Permet à Express de parser les corps de requêtes J
 // --- Routes API ---
 
 // Route de test: pour s'assurer que le serveur fonctionne
-app.get('/', (req, res) => {
-    res.send('API Root - Mon super projet !');
+app.get("/", (req, res) => {
+  res.send("API Root - Mon super projet !");
+});
+
+// Récupérer le schéma de la base de données
+app.get("/schema", (req, res) => {
+  const query = `
+        SELECT name, sql 
+        FROM sqlite_master 
+        WHERE type='table' 
+        ORDER BY name
+    `;
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
+
+// Récupérer les logs d'erreurs
+app.get("/logs/errors", (req, res) => {
+  res.json({
+    message: "success",
+    data: "Aucune erreur détectée",
+  });
 });
 
 // Récupérer tous les utilisateurs
-app.get('/utilisateurs', (req, res) => {
-    db.all('SELECT id, nom, email FROM utilisateurs', [], (err, rows) => {
-        if (err) {
-            res.status(400).json({"error": err.message});
-            return;
-        }
-        res.json({
-            "message":"success",
-            "data": rows
-        });
+app.get("/utilisateurs", (req, res) => {
+  db.all("SELECT id, nom, email FROM utilisateurs", [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
     });
+  });
 });
 
 // Récupérer un utilisateur par ID
-app.get('/utilisateurs/:id', (req, res) => {
-    const { id } = req.params;
-    db.get('SELECT id, nom, email FROM utilisateurs WHERE id = ?', [id], (err, row) => {
-        if (err) {
-            res.status(400).json({"error": err.message});
-            return;
-        }
-        if (!row) {
-            res.status(404).json({"message": "Utilisateur non trouvé"});
-            return;
-        }
-        res.json({
-            "message":"success",
-            "data": row
-        });
-    });
+app.get("/utilisateurs/:id", (req, res) => {
+  const { id } = req.params;
+  db.get(
+    "SELECT id, nom, email FROM utilisateurs WHERE id = ?",
+    [id],
+    (err, row) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      if (!row) {
+        res.status(404).json({ message: "Utilisateur non trouvé" });
+        return;
+      }
+      res.json({
+        message: "success",
+        data: row,
+      });
+    },
+  );
+});
+
+// Créer un nouvel utilisateur
+app.post("/utilisateurs", (req, res) => {
+  const { nom, email } = req.body;
+
+  if (!nom || !email) {
+    res.status(400).json({ error: "Le nom et l'email sont requis" });
+    return;
+  }
+
+  db.run(
+    "INSERT INTO utilisateurs (nom, email) VALUES (?, ?)",
+    [nom, email],
+    function (err) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: "success",
+        data: {
+          id: this.lastID,
+          nom,
+          email,
+        },
+      });
+    },
+  );
 });
 
 // Récupérer toutes les catégories
-app.get('/categories', (req, res) => {
-    db.all('SELECT id, nom FROM categories', [], (err, rows) => {
-        if (err) {
-            res.status(400).json({"error": err.message});
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": rows
-        });
+app.get("/categories", (req, res) => {
+  db.all("SELECT id, nom FROM categories", [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
     });
+  });
 });
 
 // Récupérer tous les articles avec leurs relations
-app.get('/articles', (req, res) => {
-    const query = `
+app.get("/articles", (req, res) => {
+  const query = `
         SELECT A.id, A.titre, A.contenu, 
                U.nom AS nom_utilisateur, U.id AS utilisateur_id,
                C.nom AS nom_categorie, C.id AS categorie_id
@@ -82,22 +143,22 @@ app.get('/articles', (req, res) => {
         JOIN utilisateurs U ON A.utilisateur_id = U.id
         JOIN categories C ON A.categorie_id = C.id
     `;
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            res.status(400).json({"error": err.message});
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": rows
-        });
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
     });
+  });
 });
 
 // Récupérer un article par ID
-app.get('/articles/:id', (req, res) => {
-    const { id } = req.params;
-    const query = `
+app.get("/articles/:id", (req, res) => {
+  const { id } = req.params;
+  const query = `
         SELECT A.id, A.titre, A.contenu,
                U.nom AS nom_utilisateur, U.id AS utilisateur_id,
                C.nom AS nom_categorie, C.id AS categorie_id
@@ -106,26 +167,26 @@ app.get('/articles/:id', (req, res) => {
         JOIN categories C ON A.categorie_id = C.id
         WHERE A.id = ?
     `;
-    db.get(query, [id], (err, row) => {
-        if (err) {
-            res.status(400).json({"error": err.message});
-            return;
-        }
-        if (!row) {
-            res.status(404).json({"message": "Article non trouvé"});
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": row
-        });
+  db.get(query, [id], (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    if (!row) {
+      res.status(404).json({ message: "Article non trouvé" });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
     });
+  });
 });
 
 // Récupérer les articles d'une catégorie
-app.get('/categories/:id/articles', (req, res) => {
-    const { id } = req.params;
-    const query = `
+app.get("/categories/:id/articles", (req, res) => {
+  const { id } = req.params;
+  const query = `
         SELECT A.id, A.titre, A.contenu,
                U.nom AS nom_utilisateur, U.id AS utilisateur_id,
                C.nom AS nom_categorie
@@ -134,22 +195,22 @@ app.get('/categories/:id/articles', (req, res) => {
         JOIN categories C ON A.categorie_id = C.id
         WHERE C.id = ?
     `;
-    db.all(query, [id], (err, rows) => {
-        if (err) {
-            res.status(400).json({"error": err.message});
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": rows
-        });
+  db.all(query, [id], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
     });
+  });
 });
 
 // Récupérer les articles d'une catégorie par nom
-app.get('/categories/nom/:nom/articles', (req, res) => {
-    const { nom } = req.params;
-    const query = `
+app.get("/categories/nom/:nom/articles", (req, res) => {
+  const { nom } = req.params;
+  const query = `
         SELECT A.id, A.titre, A.contenu,
                U.nom AS nom_utilisateur, U.id AS utilisateur_id,
                C.nom AS nom_categorie, C.id AS categorie_id
@@ -158,32 +219,32 @@ app.get('/categories/nom/:nom/articles', (req, res) => {
         JOIN categories C ON A.categorie_id = C.id
         WHERE C.nom = ?
     `;
-    db.all(query, [nom], (err, rows) => {
-        if (err) {
-            res.status(400).json({"error": err.message});
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": rows
-        });
+  db.all(query, [nom], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
     });
+  });
 });
 
 // TODO: Ajouter des routes pour les articles et catégories (lecture, ajout, modification, suppression)
 
 // --- Démarrer le serveur ---
 app.listen(port, () => {
-    console.log(`Serveur API démarré sur http://localhost:${port}`);
+  console.log(`Serveur API démarré sur http://localhost:${port}`);
 });
 
 // Gestion de la fermeture de la base de données à l'arrêt de l'application
-process.on('SIGINT', () => {
-    db.close((err) => {
-        if (err) {
-            console.error(err.message);
-        }
-        console.log('Connexion SQLite fermée.');
-        process.exit(0);
-    });
+process.on("SIGINT", () => {
+  db.close((err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log("Connexion SQLite fermée.");
+    process.exit(0);
+  });
 });
