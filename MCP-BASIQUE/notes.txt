@@ -30,3 +30,6 @@ ou meme de la documentation privée qui serait interne à votre entreprise.à
   Logique dynamique : recherche, calcul, transformation
   Exemples : rechercher dans une API, filtrer des données, calculer
   L'IA les exécute activement
+
+Création d'une base de données d'exemple pour servir de contexte à l'IA:
+-->une API avec Express qui permet de visualiser tout le contenu d'une BD
