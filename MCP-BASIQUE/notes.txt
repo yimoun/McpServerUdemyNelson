@@ -33,3 +33,10 @@ ou meme de la documentation privée qui serait interne à votre entreprise.à
 
 Création d'une base de données d'exemple pour servir de contexte à l'IA:
 -->une API avec Express qui permet de visualiser tout le contenu d'une BD
+
+Accéder aux tools d'un Serveur MCP depuis LM Studio:
+Développer une sorte de client-mcp en choisisant un bon model (bien vérifier les compatibilités avec l'environnement local(GPU, RAM, etc)) 
+dans LM Studio...Cette fois-ci via LM Studio, on utilise des model en local, mais dans des projets futurs comme la finalisation 
+de AICodeMentor, on peut utiliser des models en ligne comme celui de Grock ou OpenAI.
+
+ Permettre à une IA d'allumer la lumière grâce à un serveur MCP dédié: Les lumièeres de marque: Philips Hue (IOT)
