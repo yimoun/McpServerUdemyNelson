@@ -78,3 +78,7 @@ Pareillement avec celui avec lignes de commandes, sa logique métier est:
 -->Récupération des tools disponibles
 -->Communication avec LM Studio
 -->Gestion des tool_calls et réponses
+
+
+
+Le serveur MCP peut fournir certains outils qui seront gratuits ou premium
