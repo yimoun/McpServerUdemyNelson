@@ -2,9 +2,13 @@ import readline from "readline/promises";
 import dotenv from "dotenv";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
+
 dotenv.config();
 const LM_API_URL = "http://127.0.0.1:1234/v1/chat/completions";
 const LM_MODEL = "qwen/qwen3-14b"; // Remplacer par votre modèle
+
+
 class MCPClient {
     mcp;
     transport = null;

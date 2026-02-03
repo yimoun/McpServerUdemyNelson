@@ -7,8 +7,9 @@ import bodyParser from "body-parser";
 
 dotenv.config();
 
-const LM_API_URL = "http://127.0.0.1:1234/v1/chat/completions";
-const LM_MODEL = "qwen/qwen3-14b";
+
+const LM_API_URL = "http://127.0.0.1:1234/v1/chat/completions"; // API de LM Studio avec la bonne route
+const LM_MODEL = "qwen/qwen3-1.7b"; 
 const SERVER_SCRIPT = process.env.MCP_SERVER_SCRIPT;
 
 const app = express();

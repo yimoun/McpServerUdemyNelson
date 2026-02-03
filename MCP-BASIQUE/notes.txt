@@ -70,3 +70,11 @@ Utilisateur → Client MCP → LLM (LM Studio) → Tools MCP Server → Réponse
 | ✅ **Privé** (tes données restent chez toi) | ⚠️ **Données envoyées** en ligne |
 | ❌ Moins puissant | ✅ Plus puissant |
 | ❌ Besoin RAM/CPU | ✅ Pas de ressources locales |
+
+Créatiuon d'un client MCP avec interface graphique:
+ICI webServer.js est un serveur HTTP Express qui écoute les requetes venant d'une interface web cette fois ci
+Pareillement avec celui avec lignes de commandes, sa logique métier est: 
+-->Connexion au serveur MCP via StdioClientTransport
+-->Récupération des tools disponibles
+-->Communication avec LM Studio
+-->Gestion des tool_calls et réponses
